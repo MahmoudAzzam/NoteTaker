@@ -19,6 +19,7 @@ public class ListNotesActivity extends AppCompatActivity {
 
     private List<Note> notes = new ArrayList<Note>();
     private ListView notesListView;
+    private int editingNoteId = -1;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -26,7 +27,16 @@ public class ListNotesActivity extends AppCompatActivity {
         if (extra != null)
         {
             Note newNote = (Note)extra;
-            notes.add(newNote);
+
+            if(editingNoteId > -1)
+            {
+                notes.set(editingNoteId, newNote);
+                editingNoteId = -1;
+            }
+            else
+            {
+                notes.add(newNote);
+            }
             populateList();
         }
     }
@@ -42,7 +52,8 @@ public class ListNotesActivity extends AppCompatActivity {
 
                 Intent editNoteIntent = new Intent(view.getContext(), EditNoteActivity.class);
                 editNoteIntent.putExtra("Note", notes.get(itemNumber));
-                startActivity(editNoteIntent);
+                editingNoteId = itemNumber;
+                startActivityForResult(editNoteIntent, 1);
 
             }
         });

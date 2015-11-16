@@ -40,6 +40,11 @@ public class EditNoteActivity extends AppCompatActivity {
             String date = dateFormat.format(note.getDate());
 
             dateTextView.setText(date);
+
+            isInEditMode = false;
+            titleEditText.setEnabled(false);
+            noteEditText.setEnabled(false);
+            saveButton.setText("Edit");
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +60,10 @@ public class EditNoteActivity extends AppCompatActivity {
                             ().toString(), Calendar.getInstance().getTime());
                     returnIntent.putExtra("Note", note);
                     setResult(RESULT_OK, returnIntent);
+                    isInEditMode = false;
+                    titleEditText.setEnabled(false);
+                    noteEditText.setEnabled(false);
+                    saveButton.setText("Edit");
                 }
                 else
                 {
