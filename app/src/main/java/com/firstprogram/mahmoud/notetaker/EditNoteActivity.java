@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -26,12 +27,19 @@ public class EditNoteActivity extends AppCompatActivity {
         final Button saveButton = (Button)findViewById(R.id.button);
         final EditText titleEditText = (EditText)findViewById(R.id.titleEditText);
         final EditText noteEditText = (EditText)findViewById(R.id.noteEditText);
+        final TextView dateTextView = (TextView)findViewById(R.id.dateEditText);
 
         Serializable extra = getIntent().getSerializableExtra("Note");
         if (extra != null)
         {
             Note note = (Note)extra;
             titleEditText.setText(note.getTitle());
+            noteEditText.setText(note.getNote());
+
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            String date = dateFormat.format(note.getDate());
+
+            dateTextView.setText(date);
         }
 
         saveButton.setOnClickListener(new View.OnClickListener() {
