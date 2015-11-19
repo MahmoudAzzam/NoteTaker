@@ -3,7 +3,9 @@ package com.firstprogram.mahmoud.notetaker;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,13 +18,42 @@ import java.util.Date;
 import java.util.List;
 
 public class ListNotesActivity extends AppCompatActivity {
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item
+                .getMenuInfo();
+        notes.remove(info.position);
+        populateList();
+
+        return true;
+    }
 
     private List<Note> notes = new ArrayList<Note>();
     private ListView notesListView;
     private int editingNoteId = -1;
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_CANCELED){
+            return;
+        }
+
+        if(resultCode == EditNoteActivity.RESULT_DELETE){
+            notes.remove(editingNoteId);
+            editingNoteId = -1;
+            populateList();
+        }
+
+
         Serializable extra = data.getSerializableExtra("Note");
         if (extra != null)
         {
@@ -57,6 +88,8 @@ public class ListNotesActivity extends AppCompatActivity {
 
             }
         });
+
+        registerForContextMenu(notesListView);
 
         notes.add(new Note("First note", ":", new Date()));
         notes.add(new Note("Second note", ":", new Date()));
